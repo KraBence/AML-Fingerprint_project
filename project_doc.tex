@@ -1,0 +1,31 @@
+\documentclass[]{scrartcl}
+\usepackage{hyperref}
+
+\title{Fingerprint detection}
+\author{Boros Réka \quad 	Czakó Adrienn 	\\Bárdos Deák Botond \quad	Kránitz Bence}
+
+	
+
+\begin{document}
+	\maketitle
+\begin{section}*{Project plan}
+	Our dataset is the  \href{https://www.kaggle.com/datasets/ruizgara/socofing}{Soco finger dataset} with 6000 fingerprint images ,from 600 subjects. There are 10 fingerprints per subject.(\href{https://arxiv.org/pdf/1807.10609}{Original paper of the dataset })
+	\\What is our plans?:\\We would like to develop 3 models for detect the following things(if we have time we would like to merge these three models into one model to calculate these 3 things simultaneously).:
+	\begin{itemize}
+		\item Fingerprint recognition: Categorize fingerprints that they identity is between the list of acceptable persons or not.
+		\item Gender predicting: Decide that the finger belong to a male of a female
+		\item Finger detection: Decide which finger is which finger (thumb, index, middle, ring, little)
+	\end{itemize}
+\end{section}
+
+\begin{section}*{Milestones}
+	\begin{enumerate}
+		\item Preparing and understand the data and data structure, and creating the right model, or find some pretrained model what can be fine tuneable for out task. \quad(-2024 Nov 01)
+		\item Choose the model(s) and train, and comparing them, displaying some demo version\quad (2024 Nov 02- 2024 Dec 01)
+		\item Test the models and find the best one
+		\item Show the final version (2025 Jan)
+	\end{enumerate}
+	
+\end{section}
+
+\end{document}          
