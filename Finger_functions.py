@@ -2,6 +2,7 @@ import os
 import random
 from sklearn.model_selection import train_test_split
 import pandas as pd
+import cv2
 
 
 path_real = './SOCOFing/Real/'
@@ -102,3 +103,9 @@ def create_fingerprint_dataframe():
     df = pd.DataFrame(data, columns=['file_path', 'modification', 'gender', 'hand', 'finger', 'method'])
 
     return df
+
+def load_image(image_path):
+    img = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+    #img = cv2.resize(img, (96, 103))
+    img = img / 255.0
+    return img
