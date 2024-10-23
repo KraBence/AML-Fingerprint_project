@@ -1,5 +1,8 @@
 ## Important Note
-To run the code efficiently, a GPU is strongly recommended, and it may not run properly without one. Be careful not to execute the train_model() line, as this will retrain the model.
+To run the code, ensure that the dataset and the corresponding CSV files are placed in the correct folders. The dataset should be placed alongside the .ipynb file in a folder named ./archive/.
+
+To run the code efficiently, a GPU is strongly recommended, as it may not run properly without one. Be careful not to execute the train_model() line, as this will retrain the model.
+
 
 # Models
 We have developed two models: one for predicting gender and another for predicting hand (left or right). Both models share the same architecture, consisting of three residual blocks followed by a fully connected layer for classification.
