@@ -13,7 +13,7 @@ The accuracy on the test set is 81%.
 
 ## Hand Prediction
 To predict hand, load the model from the file 'hand_predict_base.pt'. Ensure that in both test_dataloader() and val_dataloader(), the target value is set to 'hand'.
-The accuracy on the test set is 81%.
+The accuracy on the test set is 85%.
 
 ## Data Splitting
 The dataset contains 600 subjects. Data is split based on the subjects' IDs: the first 500 subjects are used for training, while the remaining 100 subjects are evenly split between testing and validation.
