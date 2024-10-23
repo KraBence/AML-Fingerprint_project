@@ -9,7 +9,7 @@ We have developed two models: one for predicting gender and another for predicti
 
 ## Gender Prediction
 To predict gender, load the model from the file 'gender_predict_base.pt'. Ensure that in both test_dataloader() and val_dataloader(), the target value is set to 'gender'.
-The accuracy on the test set is 81%.
+The accuracy on the test set is 85%.
 
 ## Hand Prediction
 To predict hand, load the model from the file 'hand_predict_base.pt'. Ensure that in both test_dataloader() and val_dataloader(), the target value is set to 'hand'.
