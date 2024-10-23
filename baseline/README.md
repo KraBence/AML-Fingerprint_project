@@ -5,11 +5,11 @@ To run the code efficiently, a GPU is strongly recommended, and it may not run p
 We have developed two models: one for predicting gender and another for predicting hand (left or right). Both models share the same architecture, consisting of three residual blocks followed by a fully connected layer for classification.
 
 ## Gender Prediction
-To predict gender, load the model from the file 'gender_predict.pt'. Ensure that in both test_dataloader() and val_dataloader(), the target value is set to 'gender'.
+To predict gender, load the model from the file 'gender_predict_base.pt'. Ensure that in both test_dataloader() and val_dataloader(), the target value is set to 'gender'.
 The accuracy on the test set is %.
 
 ## Hand Prediction
-To predict hand, load the model from the file 'hand_predict.pt'. Ensure that in both test_dataloader() and val_dataloader(), the target value is set to 'hand'.
+To predict hand, load the model from the file 'hand_predict_base.pt'. Ensure that in both test_dataloader() and val_dataloader(), the target value is set to 'hand'.
 The accuracy on the test set is %.
 
 ## Data Splitting
