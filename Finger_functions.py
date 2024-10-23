@@ -71,7 +71,7 @@ def extract_information_from_filename(file_path):
     filename = os.path.basename(file_path)
     filename = filename.split('.')[0]
     parts = filename.split('__')
-
+    id = parts[0]
     if len(parts) != 2:
         raise ValueError(f"Filename '{filename}' is not in the expected format.")
 
@@ -89,7 +89,7 @@ def extract_information_from_filename(file_path):
         finger = gender_hand_finger[2]
         method = gender_hand_finger[4]
 
-    return gender, hand, finger, method, file_path
+    return id, gender, hand, finger, method, file_path
 
 
 def create_fingerprint_dataframe():
@@ -97,10 +97,10 @@ def create_fingerprint_dataframe():
     data = []
 
     for file_path, modification in all_files_with_labels:
-        gender, hand, finger, method, file_path = extract_information_from_filename(file_path)
-        data.append([file_path, modification, gender, hand, finger, method])
+        id, gender, hand, finger, method, file_path = extract_information_from_filename(file_path)
+        data.append([file_path, id, modification, gender, hand, finger, method])
 
-    df = pd.DataFrame(data, columns=['file_path', 'modification', 'gender', 'hand', 'finger', 'method'])
+    df = pd.DataFrame(data, columns=['file_path', 'id', 'modification', 'gender', 'hand', 'finger', 'method'])
 
     return df
 
