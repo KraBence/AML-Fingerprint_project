@@ -1,6 +1,7 @@
 Our dataset is the Soco finger dataset with 6000 fingerprint images from 600 subjects (so there are 10 fingerprints per subject).
 The database also contains artificially modified fingerprints for each individual, which have been altered at easy, medium, and hard levels based on three methods. The three used methods are: obliteration, central rotation, and z-cut.
 The dataset is publicly avaiable at: https://www.kaggle.com/datasets/ruizgara/socofing/data
+Further information can be found about the dataset here: https://arxiv.org/pdf/1807.10609
 
 What is our plans?:
 We would like to develop 3 models for detect the following things(if we have time we
