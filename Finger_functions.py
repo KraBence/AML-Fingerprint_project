@@ -3,6 +3,7 @@ import random
 from sklearn.model_selection import train_test_split
 import pandas as pd
 import cv2
+import numpy as np
 
 
 path_real = './SOCOFing/Real/'
@@ -104,8 +105,102 @@ def create_fingerprint_dataframe():
 
     return df
 
+def remove_frame(image_path):
+    image = cv2.imread(image_path)
+    x = 2
+    y = 2
+    w = 90
+    h = 97
+    x_end = min(x + w, 112)
+    y_end = min(y + h, 112)
+    cropped_image = image[y:y_end, x:x_end]
+    return cropped_image
+
+def remove_frame_from_array(image_array):
+    x = 2
+    y = 2
+    w = 90
+    h = 97
+    x_end = min(x + w, image_array.shape[1])
+    y_end = min(y + h, image_array.shape[0])
+    cropped_image = image_array[y:y_end, x:x_end]
+    return cropped_image
+
+
 def load_image(image_path):
     img = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
-    #img = cv2.resize(img, (96, 103))
+    img = remove_frame_from_array(img)
+    img = cv2.resize(img, (112, 112))
     img = img / 255.0
     return img
+
+def rotate_circle_region(image_array, min_radius=10, max_radius=25):
+    """
+    Selects a random circular region on the image array, rotates the region by a random degree,
+    and returns the modified image array. Ensures the circle fits within the image boundaries.
+
+    Args:
+    - image_array (numpy array): Input image array.
+    - min_radius (int): Minimum radius of the circle.
+    - max_radius (int): Maximum radius of the circle.
+
+    Returns:
+    - numpy array: Modified image array with rotated circular region.
+    """
+    h, w = image_array.shape[:2]
+
+    # Ensure the circle fits within the image boundaries
+    max_radius = min(max_radius, w // 2, h // 2)
+
+    # Randomly select a radius ensuring the circle fits in the selected center position
+    radius = random.randint(min_radius, max_radius)
+
+    # Randomly select a center point, ensuring the circle fits within the image boundaries
+    center_x = random.randint(radius, w - radius)
+    center_y = random.randint(radius, h - radius)
+
+    # Generate a random degree of rotation
+    angle = random.uniform(25, 335)
+
+    # Create a circular mask
+    mask = np.zeros((h, w), dtype=np.uint8)
+    cv2.circle(mask, (center_x, center_y), radius, (255), thickness=-1)
+
+    # Extract the circular region using the mask
+    circular_region = cv2.bitwise_and(image_array, image_array, mask=mask)
+
+    # Crop the bounding box around the circular region
+    x1, y1 = max(0, center_x - radius), max(0, center_y - radius)
+    x2, y2 = min(w, center_x + radius), min(h, center_y + radius)
+    cropped_circle = circular_region[y1:y2, x1:x2]
+
+    # Create a mask for the cropped circle region
+    circle_mask = mask[y1:y2, x1:x2]
+
+    # Rotate the cropped circular region without black borders
+    rotation_matrix = cv2.getRotationMatrix2D((radius, radius), angle, scale=1)
+    rotated_circle = cv2.warpAffine(
+        cropped_circle, rotation_matrix, (cropped_circle.shape[1], cropped_circle.shape[0]),
+        borderMode=cv2.BORDER_CONSTANT, borderValue=(0, 0, 0)
+    )
+
+    # Reapply the circular mask to keep only the circle
+    rotated_circle_masked = cv2.bitwise_and(rotated_circle, rotated_circle, mask=circle_mask)
+
+    # Insert the rotated circle back into the original image
+    result_image = image_array.copy()
+    for i in range(rotated_circle_masked.shape[0]):
+        for j in range(rotated_circle_masked.shape[1]):
+            if circle_mask[i, j] != 0:  # Update only within the circular region
+                result_image[y1 + i, x1 + j] = rotated_circle_masked[i, j]
+
+    return result_image
+
+
+
+
+
+
+
+
+
