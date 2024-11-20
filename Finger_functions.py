@@ -196,16 +196,14 @@ def rotate_circle_region(image_array, min_radius=10, max_radius=25):
 
     return result_image
 
-def generate_modified_fingerprint_dataframe(fingerprint_df, image_column, n_rows):
+def generate_modified_fingerprint_dataframe_rotation(fingerprint_df, image_column):
     """
     Generates a modified DataFrame with modified fingerprint images,
-    only modifying rows where the "modification" column is 0. Ensures the required
-    number of modified images is returned.
+    only modifying rows where the "modification" column is 0.
 
     Args:
     - fingerprint_df (pd.DataFrame): Original DataFrame containing fingerprint data.
     - image_column (str): Column name containing the image arrays.
-    - n_rows (int): Number of rows to process from the original DataFrame.
 
     Returns:
     - pd.DataFrame: New DataFrame with modified fingerprint data.
@@ -218,16 +216,12 @@ def generate_modified_fingerprint_dataframe(fingerprint_df, image_column, n_rows
     if eligible_rows.empty:
         raise ValueError("No non-modified rows available for processing.")
 
-    # Ensure we get exactly n_rows modified images
-    processed_count = 0
+    # Iterate through each row that has modification == 0
     for index, row in eligible_rows.iterrows():
-        if processed_count >= n_rows:
-            break  # Stop once we have the required number of modified images
-
         # Retrieve the specific image for the current row
         original_image = row[image_column]
 
-        # Modify the fingerprint image uniquely for this row
+        # Apply elastic distortion to the image
         modified_image = rotate_circle_region(original_image)
 
         # Create a new row for the modified fingerprint
@@ -242,13 +236,6 @@ def generate_modified_fingerprint_dataframe(fingerprint_df, image_column, n_rows
             "image_data": modified_image  # Add the modified image
         }
         modified_data.append(new_row)
-        processed_count += 1
-
-    # Check if we reached the required count
-    if processed_count < n_rows:
-        raise ValueError(
-            f"Only {processed_count} non-modified rows available for processing; {n_rows} required."
-        )
 
     # Create a DataFrame from the modified data
     modified_df = pd.DataFrame(modified_data)
@@ -321,16 +308,14 @@ def obliterate_circle_region_with_noise(image_array, min_radius=5, max_radius=20
 
     return obliterated_image
 
-def generate_modified_fingerprint_dataframe_obliteration(fingerprint_df, image_column, n_rows):
+def generate_modified_fingerprint_dataframe_obl(fingerprint_df, image_column):
     """
     Generates a modified DataFrame with modified fingerprint images,
-    only modifying rows where the "modification" column is 0. Ensures the required
-    number of modified images is returned.
+    only modifying rows where the "modification" column is 0.
 
     Args:
     - fingerprint_df (pd.DataFrame): Original DataFrame containing fingerprint data.
     - image_column (str): Column name containing the image arrays.
-    - n_rows (int): Number of rows to process from the original DataFrame.
 
     Returns:
     - pd.DataFrame: New DataFrame with modified fingerprint data.
@@ -343,16 +328,12 @@ def generate_modified_fingerprint_dataframe_obliteration(fingerprint_df, image_c
     if eligible_rows.empty:
         raise ValueError("No non-modified rows available for processing.")
 
-    # Ensure we get exactly n_rows modified images
-    processed_count = 0
+    # Iterate through each row that has modification == 0
     for index, row in eligible_rows.iterrows():
-        if processed_count >= n_rows:
-            break  # Stop once we have the required number of modified images
-
         # Retrieve the specific image for the current row
         original_image = row[image_column]
 
-        # Modify the fingerprint image uniquely for this row
+        # Apply elastic distortion to the image
         modified_image = obliterate_circle_region_with_noise(original_image)
 
         # Create a new row for the modified fingerprint
@@ -367,13 +348,89 @@ def generate_modified_fingerprint_dataframe_obliteration(fingerprint_df, image_c
             "image_data": modified_image  # Add the modified image
         }
         modified_data.append(new_row)
-        processed_count += 1
 
-    # Check if we reached the required count
-    if processed_count < n_rows:
-        raise ValueError(
-            f"Only {processed_count} non-modified rows available for processing; {n_rows} required."
-        )
+    # Create a DataFrame from the modified data
+    modified_df = pd.DataFrame(modified_data)
+
+    return modified_df
+
+
+from scipy.ndimage import gaussian_filter, map_coordinates
+
+def elastic_distortion(image, alpha=34, sigma=4):
+    """
+    Applies elastic distortion to a fingerprint image.
+
+    Args:
+    - image (numpy array): Input image (2D array for grayscale fingerprints).
+    - alpha (float): Scaling factor for the distortion intensity.
+    - sigma (float): Standard deviation for the Gaussian filter (smoothness of distortion).
+
+    Returns:
+    - numpy array: The distorted image.
+    """
+    # Ensure the input is a grayscale image (2D array)
+    if len(image.shape) == 3:
+        raise ValueError("Input image should be a grayscale (2D) array.")
+
+    # Generate random displacement fields
+    random_state = np.random.RandomState(None)
+    dx = gaussian_filter((random_state.rand(*image.shape) * 2 - 1), sigma) * alpha
+    dy = gaussian_filter((random_state.rand(*image.shape) * 2 - 1), sigma) * alpha
+
+    # Create coordinate grid for the image
+    x, y = np.meshgrid(np.arange(image.shape[1]), np.arange(image.shape[0]))
+    indices = (y + dy).reshape(-1), (x + dx).reshape(-1)
+
+    # Map the distorted coordinates back to the original image
+    distorted_image = map_coordinates(image, indices, order=1, mode='reflect').reshape(image.shape)
+
+    return distorted_image
+
+
+
+
+
+def generate_modified_fingerprint_dataframe_elastic(fingerprint_df, image_column):
+    """
+    Generates a modified DataFrame with modified fingerprint images,
+    only modifying rows where the "modification" column is 0.
+
+    Args:
+    - fingerprint_df (pd.DataFrame): Original DataFrame containing fingerprint data.
+    - image_column (str): Column name containing the image arrays.
+
+    Returns:
+    - pd.DataFrame: New DataFrame with modified fingerprint data.
+    """
+    modified_data = []
+
+    # Filter rows with modification == 0
+    eligible_rows = fingerprint_df[fingerprint_df["modification"] == 0]
+
+    if eligible_rows.empty:
+        raise ValueError("No non-modified rows available for processing.")
+
+    # Iterate through each row that has modification == 0
+    for index, row in eligible_rows.iterrows():
+        # Retrieve the specific image for the current row
+        original_image = row[image_column]
+
+        # Apply elastic distortion to the image
+        modified_image = elastic_distortion(original_image, alpha=34, sigma=4)
+
+        # Create a new row for the modified fingerprint
+        new_row = {
+            "file_path": "",  # Empty for modified fingerprints
+            "id": row["id"],  # Use the original ID
+            "modification": 4,  # Indicate this is a modified fingerprint
+            "gender": row["gender"],  # Copy gender from original
+            "hand": row["hand"],  # Copy hand from original
+            "finger": row["finger"],  # Copy finger from original
+            "method": 4,  # Indicate the modification method
+            "image_data": modified_image  # Add the modified image
+        }
+        modified_data.append(new_row)
 
     # Create a DataFrame from the modified data
     modified_df = pd.DataFrame(modified_data)
