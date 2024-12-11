@@ -25,3 +25,6 @@ Here you can see what the files does in the repository:
 ├── **plots.ipynb**            # Here are the final results plotted<br>
 ├── **requirements.txt**                   # install this file with pip install<br>
 ├── **vgg16.ipynb**      # You can run, train, and test a model<br>
+
+
+- [From this link you can dolnload the preprocessed data.](https://1drv.ms/f/s!AkSIK7fJk14QgpYAvmzwmpGGXj1lQg?e=iWe7Mg)
