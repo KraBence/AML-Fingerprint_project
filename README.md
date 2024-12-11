@@ -20,7 +20,7 @@ little)
 
 Here you can see what the files does in the repository:
 │<br>
-├── **Data_preparatin.ipynb**              # In this notebook we created image transformaisations and visualies them<br>
+├── **Data_preparatin.ipynb**              # In this notebook we transfrmedabd visualised images<br>
 ├── **Finger_functions.py**              # creating .csv from images.<br>
 ├── **plots.ipynb**            # Here are the final results plotted<br>
 ├── **requirements.txt**                   # install this file with pip isnsall<br>
