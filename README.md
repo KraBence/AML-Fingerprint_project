@@ -3,6 +3,8 @@ The database also contains artificially modified fingerprints for each individua
 The dataset is publicly avaiable at: https://www.kaggle.com/datasets/ruizgara/socofing/data .
 Further information can be found about the dataset here: https://arxiv.org/pdf/1807.10609
 
+
+
 What is our plans?:
 We would like to develop 3 models for detect the following things(if we have time we
 would like to merge these three models into one model to calculate these things
@@ -15,3 +17,11 @@ list of acceptable persons or not.
    
 -Finger detection: Decide which finger is which finger (thumb, index, middle, ring,
 little)
+
+Here you can see what the files does in the repository:
+│<br>
+├── **Data_preparatin.ipynb**              # In this notebook we created image transformaisations and visualies them<br>
+├── **Finger_functions.py**              # creating .csv from images.<br>
+├── **plots.ipynb**            # Here are the final results plotted<br>
+├── **requirements.txt**                   # install this file with pip isnsall<br>
+├── **vgg16.ipynb**      # You cna run, train, and test a model<br>
