@@ -23,5 +23,5 @@ Here you can see what the files does in the repository:
 ├── **Data_preparatin.ipynb**              # In this notebook we transfrmedabd visualised images<br>
 ├── **Finger_functions.py**              # creating .csv from images.<br>
 ├── **plots.ipynb**            # Here are the final results plotted<br>
-├── **requirements.txt**                   # install this file with pip isnsall<br>
-├── **vgg16.ipynb**      # You cna run, train, and test a model<br>
+├── **requirements.txt**                   # install this file with pip install<br>
+├── **vgg16.ipynb**      # You can run, train, and test a model<br>
